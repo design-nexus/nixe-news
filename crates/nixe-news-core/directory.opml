@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<opml version="2.0">
+  <head><title>Nixe News directory</title></head>
+  <body>
+    <outline text="World">
+      <outline text="BBC World" type="rss" xmlUrl="https://feeds.bbci.co.uk/news/world/rss.xml" htmlUrl="https://www.bbc.com/news/world"/>
+      <outline text="The New York Times World" type="rss" xmlUrl="https://rss.nytimes.com/services/xml/rss/nyt/World.xml" htmlUrl="https://www.nytimes.com/section/world"/>
+      <outline text="NPR World" type="rss" xmlUrl="https://feeds.npr.org/1004/rss.xml" htmlUrl="https://www.npr.org/sections/world/"/>
+      <outline text="The Guardian World" type="rss" xmlUrl="https://www.theguardian.com/world/rss" htmlUrl="https://www.theguardian.com/world"/>
+      <outline text="Al Jazeera" type="rss" xmlUrl="https://www.aljazeera.com/xml/rss/all.xml" htmlUrl="https://www.aljazeera.com/"/>
+      <outline text="The Wall Street Journal" type="rss" xmlUrl="https://feeds.a.dj.com/rss/RSSWorldNews.xml" htmlUrl="https://www.wsj.com/"/>
+    </outline>
+    <outline text="National">
+      <outline text="The New York Times" type="rss" xmlUrl="https://rss.nytimes.com/services/xml/rss/nyt/US.xml" htmlUrl="https://www.nytimes.com/section/us"/>
+      <outline text="NPR News" type="rss" xmlUrl="https://feeds.npr.org/1001/rss.xml" htmlUrl="https://www.npr.org/"/>
+      <outline text="NPR National" type="rss" xmlUrl="https://feeds.npr.org/1003/rss.xml" htmlUrl="https://www.npr.org/sections/national/"/>
+      <outline text="ABC News" type="rss" xmlUrl="https://abcnews.go.com/abcnews/topstories" htmlUrl="https://abcnews.go.com/"/>
+      <outline text="CBS News" type="rss" xmlUrl="https://www.cbsnews.com/latest/rss/main" htmlUrl="https://www.cbsnews.com/"/>
+      <outline text="NBC News" type="rss" xmlUrl="https://feeds.nbcnews.com/nbcnews/public/news" htmlUrl="https://www.nbcnews.com/"/>
+      <outline text="The Guardian US" type="rss" xmlUrl="https://www.theguardian.com/us-news/rss" htmlUrl="https://www.theguardian.com/us-news"/>
+    </outline>
+    <outline text="Politics">
+      <outline text="The New York Times Politics" type="rss" xmlUrl="https://rss.nytimes.com/services/xml/rss/nyt/Politics.xml" htmlUrl="https://www.nytimes.com/section/politics"/>
+      <outline text="NPR Politics" type="rss" xmlUrl="https://feeds.npr.org/1014/rss.xml" htmlUrl="https://www.npr.org/sections/politics/"/>
+      <outline text="BBC Politics" type="rss" xmlUrl="https://feeds.bbci.co.uk/news/politics/rss.xml" htmlUrl="https://www.bbc.com/news/politics"/>
+      <outline text="The Hill" type="rss" xmlUrl="https://thehill.com/news/feed/" htmlUrl="https://thehill.com/"/>
+      <outline text="The Guardian Politics" type="rss" xmlUrl="https://www.theguardian.com/politics/rss" htmlUrl="https://www.theguardian.com/politics"/>
+    </outline>
+    <outline text="Business">
+      <outline text="Bloomberg" type="rss" xmlUrl="https://feeds.bloomberg.com/markets/news.rss" htmlUrl="https://www.bloomberg.com/"/>
+      <outline text="CNBC" type="rss" xmlUrl="https://www.cnbc.com/id/100003114/device/rss/rss.html" htmlUrl="https://www.cnbc.com/"/>
+      <outline text="The New York Times Business" type="rss" xmlUrl="https://rss.nytimes.com/services/xml/rss/nyt/Business.xml" htmlUrl="https://www.nytimes.com/section/business"/>
+      <outline text="BBC Business" type="rss" xmlUrl="https://feeds.bbci.co.uk/news/business/rss.xml" htmlUrl="https://www.bbc.com/news/business"/>
+      <outline text="NPR Business" type="rss" xmlUrl="https://feeds.npr.org/1006/rss.xml" htmlUrl="https://www.npr.org/sections/business/"/>
+      <outline text="The Guardian Business" type="rss" xmlUrl="https://www.theguardian.com/uk/business/rss" htmlUrl="https://www.theguardian.com/business"/>
+    </outline>
+    <outline text="Technology">
+      <outline text="The Verge" type="rss" xmlUrl="https://www.theverge.com/rss/index.xml" htmlUrl="https://www.theverge.com/"/>
+      <outline text="Wired" type="rss" xmlUrl="https://www.wired.com/feed/rss" htmlUrl="https://www.wired.com/"/>
+      <outline text="Ars Technica" type="rss" xmlUrl="https://feeds.arstechnica.com/arstechnica/index" htmlUrl="https://arstechnica.com/"/>
+      <outline text="TechCrunch" type="rss" xmlUrl="https://techcrunch.com/feed/" htmlUrl="https://techcrunch.com/"/>
+      <outline text="MIT Technology Review" type="rss" xmlUrl="https://www.technologyreview.com/feed/" htmlUrl="https://www.technologyreview.com/"/>
+      <outline text="The New York Times Technology" type="rss" xmlUrl="https://rss.nytimes.com/services/xml/rss/nyt/Technology.xml" htmlUrl="https://www.nytimes.com/section/technology"/>
+      <outline text="BBC Technology" type="rss" xmlUrl="https://feeds.bbci.co.uk/news/technology/rss.xml" htmlUrl="https://www.bbc.com/news/technology"/>
+      <outline text="NPR Technology" type="rss" xmlUrl="https://feeds.npr.org/1019/rss.xml" htmlUrl="https://www.npr.org/sections/technology/"/>
+    </outline>
+    <outline text="Science">
+      <outline text="Nature" type="rss" xmlUrl="https://www.nature.com/nature.rss" htmlUrl="https://www.nature.com/"/>
+      <outline text="Science" type="rss" xmlUrl="https://www.science.org/rss/news_current.xml" htmlUrl="https://www.science.org/"/>
+      <outline text="Scientific American" type="rss" xmlUrl="https://www.scientificamerican.com/platform/syndication/rss/" htmlUrl="https://www.scientificamerican.com/"/>
+      <outline text="New Scientist" type="rss" xmlUrl="https://www.newscientist.com/feed/home/" htmlUrl="https://www.newscientist.com/"/>
+      <outline text="NASA" type="rss" xmlUrl="https://www.nasa.gov/feed/" htmlUrl="https://www.nasa.gov/"/>
+      <outline text="The New York Times Science" type="rss" xmlUrl="https://rss.nytimes.com/services/xml/rss/nyt/Science.xml" htmlUrl="https://www.nytimes.com/section/science"/>
+      <outline text="NPR Science" type="rss" xmlUrl="https://feeds.npr.org/1007/rss.xml" htmlUrl="https://www.npr.org/sections/science/"/>
+      <outline text="BBC Science" type="rss" xmlUrl="https://feeds.bbci.co.uk/news/science_and_environment/rss.xml" htmlUrl="https://www.bbc.com/news/science_and_environment"/>
+    </outline>
+    <outline text="Health">
+      <outline text="STAT" type="rss" xmlUrl="https://www.statnews.com/feed/" htmlUrl="https://www.statnews.com/"/>
+      <outline text="The New York Times Health" type="rss" xmlUrl="https://rss.nytimes.com/services/xml/rss/nyt/Health.xml" htmlUrl="https://www.nytimes.com/section/health"/>
+      <outline text="BBC Health" type="rss" xmlUrl="https://feeds.bbci.co.uk/news/health/rss.xml" htmlUrl="https://www.bbc.com/news/health"/>
+      <outline text="NPR Health" type="rss" xmlUrl="https://feeds.npr.org/1128/rss.xml" htmlUrl="https://www.npr.org/sections/health-shots/"/>
+      <outline text="The Guardian Health" type="rss" xmlUrl="https://www.theguardian.com/society/health/rss" htmlUrl="https://www.theguardian.com/society/health"/>
+    </outline>
+    <outline text="Sports">
+      <outline text="ESPN" type="rss" xmlUrl="https://www.espn.com/espn/rss/news" htmlUrl="https://www.espn.com/"/>
+      <outline text="BBC Sport" type="rss" xmlUrl="https://feeds.bbci.co.uk/sport/rss.xml" htmlUrl="https://www.bbc.com/sport"/>
+      <outline text="The New York Times Sports" type="rss" xmlUrl="https://rss.nytimes.com/services/xml/rss/nyt/Sports.xml" htmlUrl="https://www.nytimes.com/section/sports"/>
+      <outline text="The Guardian Sport" type="rss" xmlUrl="https://www.theguardian.com/uk/sport/rss" htmlUrl="https://www.theguardian.com/sport"/>
+    </outline>
+    <outline text="Culture">
+      <outline text="The New York Times Arts" type="rss" xmlUrl="https://rss.nytimes.com/services/xml/rss/nyt/Arts.xml" htmlUrl="https://www.nytimes.com/section/arts"/>
+      <outline text="The Guardian Culture" type="rss" xmlUrl="https://www.theguardian.com/culture/rss" htmlUrl="https://www.theguardian.com/culture"/>
+      <outline text="BBC Culture" type="rss" xmlUrl="https://feeds.bbci.co.uk/news/entertainment_and_arts/rss.xml" htmlUrl="https://www.bbc.com/news/entertainment_and_arts"/>
+      <outline text="Variety" type="rss" xmlUrl="https://variety.com/feed/" htmlUrl="https://variety.com/"/>
+      <outline text="Pitchfork" type="rss" xmlUrl="https://pitchfork.com/feed/feed-news/rss" htmlUrl="https://pitchfork.com/"/>
+    </outline>
+  </body>
+</opml>

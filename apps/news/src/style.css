@@ -1,0 +1,222 @@
+.settings-navigation.compact button.nav-item {
+  min-width: 40px;
+  padding: 0;
+}
+
+.settings-navigation button.nav-item {
+  min-height: 42px;
+  padding: 0 12px;
+  margin: 1px 0;
+  border-radius: 6px;
+  border: none;
+  background: transparent;
+  box-shadow: none;
+  color: @theme_text;
+  font-weight: 500;
+}
+
+.settings-navigation button.nav-item:hover {
+  background: @row_hover;
+}
+
+.settings-navigation button.nav-item.active {
+  background: @nav_active;
+  box-shadow: none;
+}
+
+.toolbar {
+  min-height: 46px;
+  padding: 0 12px 0 16px;
+  border-bottom: 1px solid @hairline;
+}
+
+.toolbar-title {
+  font-weight: 700;
+  color: @theme_text;
+}
+
+.toolbar-meta {
+  font-size: 0.86em;
+  color: @theme_dim_text;
+}
+
+.article-row {
+  padding: 12px 18px;
+  border-radius: 0;
+  border-bottom: 1px solid @divider;
+}
+
+.article-row.compact {
+  padding: 7px 18px;
+}
+
+.unread-dot {
+  min-width: 7px;
+  min-height: 7px;
+  border-radius: 999px;
+  background: transparent;
+  margin-top: 6px;
+}
+
+.unread-dot.active {
+  background: @theme_accent;
+}
+
+.article-row.compact .unread-dot {
+  margin-top: 0;
+}
+
+.article-title {
+  font-weight: 500;
+  color: alpha(@theme_text, 0.75);
+}
+
+.article-title.unread {
+  font-weight: 700;
+  color: @theme_text;
+}
+
+.article-excerpt {
+  color: @theme_dim_text;
+  font-size: 0.88em;
+}
+
+.article-meta {
+  color: @theme_dim_text;
+  font-size: 0.82em;
+}
+
+.article-source {
+  color: @theme_accent;
+  font-weight: 600;
+  font-size: 0.82em;
+}
+
+.reader {
+  padding: 0;
+  background: transparent;
+}
+
+.reader-cover {
+  border-radius: 8px;
+}
+
+.reader-kicker {
+  color: @theme_accent;
+  font-size: 0.86em;
+  font-weight: 600;
+}
+
+.reader-title {
+  font-family: "Noto Serif", "Liberation Serif", serif;
+  font-size: 1.75em;
+  font-weight: 700;
+  line-height: 1.25;
+  color: @theme_text;
+}
+
+.reader-meta {
+  color: @theme_dim_text;
+  font-size: 0.88em;
+}
+
+.reader-brief-card {
+  padding: 14px 18px;
+  border-radius: 10px;
+  background: alpha(@theme_accent, 0.09);
+  border: 1px solid alpha(@theme_accent, 0.35);
+}
+
+.reader-brief-title {
+  font-size: 0.76em;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  color: @theme_accent;
+}
+
+.reader-brief-body {
+  font-size: 0.94em;
+  color: @theme_text;
+}
+
+.reader-body {
+  font-family: "Noto Serif", "Liberation Serif", serif;
+  font-size: 1.1em;
+  font-weight: 400;
+  color: @theme_text;
+  background: transparent;
+  outline: none;
+  box-shadow: none;
+}
+
+.reader-body:focus,
+.reader-body:focus-visible,
+.reader-body:focus-within {
+  outline: none;
+  box-shadow: none;
+  background: transparent;
+}
+
+.reader-body selection,
+.reader selection {
+  background-color: transparent;
+  color: inherit;
+}
+
+.reader-body.font-serif {
+  font-family: "Noto Serif", "Liberation Serif", serif;
+}
+
+.reader-body.font-sans {
+  font-family: "Adwaita Sans", "Noto Sans", sans-serif;
+}
+
+.reader-body.font-mono {
+  font-family: "JetBrains Mono", "JetBrainsMono Nerd Font", monospace;
+}
+
+.reader-body.font-small {
+  font-size: 0.96em;
+}
+
+.reader-body.font-medium {
+  font-size: 1.1em;
+}
+
+.reader-body.font-large {
+  font-size: 1.28em;
+}
+
+.reader-footer {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid @hairline;
+}
+
+window.news-window button.active {
+  color: @theme_accent;
+  background: @nav_active;
+}
+
+.empty-hint {
+  color: @theme_dim_text;
+}
+
+listview {
+  background: transparent;
+}
+
+listview > row {
+  padding: 0;
+  border-radius: 0;
+  background: transparent;
+}
+
+listview > row:hover {
+  background: @row_hover;
+}
+
+listview > row:selected {
+  background: @nav_active;
+}
+

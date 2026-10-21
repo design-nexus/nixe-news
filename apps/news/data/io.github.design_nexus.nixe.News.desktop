@@ -1,0 +1,14 @@
+[Desktop Entry]
+Type=Application
+Name=News
+GenericName=News Reader
+Comment=Read RSS, Atom, and JSON feeds on this computer
+Exec=nixe-news
+Icon=io.github.design_nexus.nixe.News
+Terminal=false
+Categories=Network;News;GTK;
+Keywords=news;rss;atom;feed;reader;
+StartupNotify=true
+StartupWMClass=io.github.design_nexus.nixe.News
+SingleMainWindow=true
+DBusActivatable=false

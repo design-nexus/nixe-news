@@ -1,0 +1,12 @@
+id = "nixe-news"
+name = "News"
+version = "0.1.0"
+api_version = 1
+exec = ["./nixe-news-glimpse"]
+capabilities = ["search", "preview"]
+description = "Search the News library on this computer. Try news, news unread, news saved, or words from a title."
+
+[permissions]
+network = false
+selected_sources = false
+read = []

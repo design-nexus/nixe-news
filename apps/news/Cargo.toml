@@ -1,0 +1,25 @@
+[package]
+name = "nixe-news"
+version = "0.1.0"
+description = "A local news reader for Omarchy: RSS, Atom, and JSON Feed"
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+edition.workspace = true
+
+[[bin]]
+name = "nixe-news"
+path = "src/main.rs"
+
+[dependencies]
+anyhow = "1.0.104"
+gtk = { version = "0.11", package = "gtk4", features = ["v4_18"] }
+nixe-core = { path = "../../crates/nixe-core" }
+nixe-news-core = { path = "../../crates/nixe-news-core" }
+nixe-sync = { path = "../../crates/nixe-sync" }
+nixe-theme = { path = "../../crates/nixe-theme" }
+nixe-ui = { path = "../../crates/nixe-ui" }
+serde = { version = "1.0.229", features = ["derive"] }
+serde_json = "1.0.151"
+tokio = { version = "1", features = ["rt-multi-thread", "sync", "time", "macros"] }
+toml = "1.1.6"
