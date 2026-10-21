@@ -1,0 +1,11 @@
+{
+  "application": "news",
+  "directory": "news",
+  "packages": [
+    "nixe-news",
+    "nixe-news-glimpse"
+  ],
+  "manifest": "Cargo.toml",
+  "prepare": [],
+  "binaries": []
+}

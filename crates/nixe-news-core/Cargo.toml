@@ -11,7 +11,7 @@ repository.workspace = true
 ammonia = "4.2"
 anyhow = "1.0.104"
 feed-rs = "=2.4.0"
-nixe-sync = { path = "../nixe-sync" }
+nixe-sync = { git = "file:///home/ken/Projects/nixe-migration-97c1899-reviewed/nixe-core", rev = "e4595e68a4fd9b44bd15e95311ace1d0fb669bc4" }
 reqwest = { version = "0.12", default-features = false, features = ["blocking", "rustls-tls"] }
 roxmltree = "0.21"
 scraper = "0.24"
@@ -23,5 +23,5 @@ url = "2"
 uuid = { version = "1", features = ["v4"] }
 
 [dev-dependencies]
-nixe-sync = { path = "../nixe-sync", features = ["testutil"] }
+nixe-sync = { git = "file:///home/ken/Projects/nixe-migration-97c1899-reviewed/nixe-core", rev = "e4595e68a4fd9b44bd15e95311ace1d0fb669bc4", features = ["testutil"] }
 serde_json = "1.0.151"
