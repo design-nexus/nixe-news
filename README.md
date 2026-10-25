@@ -6,6 +6,12 @@ and JSON feeds, keeps articles in SQLite, and takes its colors from your Omarchy
 Reading works offline after a feed has been fetched once. News does not call a news
 service, and it does not load an AI model to open or search articles.
 
+## Install
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/design-nexus/nixe-news/main/install.sh | bash
+```
+
 ## What it does
 
 - Add a feed by its address. `http` is fetched only when you type that address.
