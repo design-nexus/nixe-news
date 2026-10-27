@@ -1,9 +1,9 @@
-//! Unix socket client for Nixe Assistant. This app does not load a model.
+//! Unix socket client for Nyx Assistant. This app does not load a model.
 //!
 //! Connect failure is “Assistant isn’t running”. A read that passes the deadline
 //! is a timeout. The article pane decides what to keep.
 
-use nixe_news_core::{AiFailure, Assistant, Step, interpret};
+use nyx_news_core::{AiFailure, Assistant, Step, interpret};
 use std::io::{BufRead, BufReader, Write};
 use std::os::unix::net::UnixStream;
 use std::path::PathBuf;
@@ -35,8 +35,8 @@ pub fn cancel() {
 
 fn socket_path() -> PathBuf {
     match std::env::var_os("XDG_RUNTIME_DIR") {
-        Some(runtime) => PathBuf::from(runtime).join("nixe-assistant/assistant.sock"),
-        None => dirs_cache().join("nixe-assistant/runtime/assistant.sock"),
+        Some(runtime) => PathBuf::from(runtime).join("nyx-assistant/assistant.sock"),
+        None => dirs_cache().join("nyx-assistant/runtime/assistant.sock"),
     }
 }
 

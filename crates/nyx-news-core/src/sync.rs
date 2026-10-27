@@ -5,7 +5,7 @@
 
 use crate::store::Db;
 use anyhow::Result;
-use nixe_sync::{Hlc, Op, OpKind, Record, Remote, State, sync_exchange};
+use nyx_sync::{Hlc, Op, OpKind, Record, Remote, State, sync_exchange};
 use rusqlite::{OptionalExtension, params};
 use std::collections::BTreeMap;
 
@@ -342,12 +342,12 @@ mod tests {
     use super::*;
     use crate::model::{NewFeed, ParsedFeed, ParsedItem, View};
     use crate::store::open;
-    use nixe_sync::{OpKind, Secret, StubServer, WebDav, WebDavConfig};
+    use nyx_sync::{OpKind, Secret, StubServer, WebDav, WebDavConfig};
     use std::path::PathBuf;
     use uuid::Uuid;
 
     fn scratch() -> PathBuf {
-        let path = std::env::temp_dir().join(format!("nixe-news-sync-{}", Uuid::new_v4()));
+        let path = std::env::temp_dir().join(format!("nyx-news-sync-{}", Uuid::new_v4()));
         std::fs::create_dir_all(&path).unwrap();
         path
     }
@@ -415,7 +415,7 @@ mod tests {
             server: stub.url().into(),
             username: "ken".into(),
             password: Secret::new("wrong").unwrap(),
-            folder: "Nixe/News".into(),
+            folder: "Nyx/News".into(),
             allow_insecure_loopback: true,
             recipient: None,
             identity: None,

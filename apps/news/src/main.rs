@@ -22,15 +22,15 @@ mod worker;
 use gtk::prelude::*;
 use gtk::{gio, glib};
 
-pub const APP_ID: &str = "io.github.design_nexus.nixe.News";
+pub const APP_ID: &str = "io.github.design_nexus.nyx.News";
 
-const USAGE: &str = "Usage: nixe-news [OPTIONS]\n\
+const USAGE: &str = "Usage: nyx-news [OPTIONS]\n\
 \n\
   --section ID    open Following, Discover, or settings\n\
   --toggle        close the window if it's open, otherwise open it\n";
 
 fn main() -> glib::ExitCode {
-    nixe_core::app::init(nixe_core::app::App { slug: "nixe-news", name: "News" });
+    nyx_core::app::init(nyx_core::app::App { slug: "nyx-news", name: "News" });
     let args: Vec<String> = std::env::args().collect();
     if args.iter().any(|a| a == "--help" || a == "-h") {
         print!("{USAGE}");
@@ -44,7 +44,7 @@ fn main() -> glib::ExitCode {
     let app = gtk::Application::builder().application_id(APP_ID).flags(gio::ApplicationFlags::HANDLES_COMMAND_LINE).build();
     app.connect_startup(|app| {
         theme::install();
-        nixe_core::control::serve_async(app, control::tools(), control::handle);
+        nyx_core::control::serve_async(app, control::tools(), control::handle);
     });
     app.connect_command_line(|app, cl| {
         let argv: Vec<String> = cl.arguments().iter().map(|a| a.to_string_lossy().to_string()).collect();

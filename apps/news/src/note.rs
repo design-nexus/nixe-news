@@ -3,7 +3,7 @@
 use crate::html_text;
 use crate::paths;
 use crate::window;
-use nixe_news_core::{ArticleListItem, article_markdown};
+use nyx_news_core::{ArticleListItem, article_markdown};
 
 pub fn markdown(article: &ArticleListItem) -> String {
     let cached = article

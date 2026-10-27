@@ -11,7 +11,7 @@ use crate::window;
 use crate::worker;
 use gtk::gio;
 use gtk::prelude::*;
-use nixe_news_core::{AiFailure, Edition, Excerpt, View, lay_paper};
+use nyx_news_core::{AiFailure, Edition, Excerpt, View, lay_paper};
 use std::cell::{Cell, RefCell};
 
 thread_local! {
@@ -369,15 +369,15 @@ pub fn bind_articles() {
     let mut seen_titles: Vec<(String, Option<i64>)> = Vec::new();
     for article in window::articles() {
         let clean = if !article.url.is_empty() {
-            nixe_news_core::canonical_url(&article.url).unwrap_or_else(|_| article.url.clone())
+            nyx_news_core::canonical_url(&article.url).unwrap_or_else(|_| article.url.clone())
         } else {
-            nixe_news_core::canonical_url(&article.original_url).unwrap_or_else(|_| article.original_url.clone())
+            nyx_news_core::canonical_url(&article.original_url).unwrap_or_else(|_| article.original_url.clone())
         };
         if !clean.is_empty() && seen_urls.contains(&clean) {
             continue;
         }
         if !article.title.trim().is_empty()
-            && seen_titles.iter().any(|(t, when)| nixe_news_core::same_story(&article.title, article.published_at, t, *when))
+            && seen_titles.iter().any(|(t, when)| nyx_news_core::same_story(&article.title, article.published_at, t, *when))
         {
             continue;
         }
@@ -589,15 +589,15 @@ fn fill_paper() {
             let mut unique = Vec::new();
             for a in articles {
                 let clean = if !a.url.is_empty() {
-                    nixe_news_core::canonical_url(&a.url).unwrap_or_else(|_| a.url.clone())
+                    nyx_news_core::canonical_url(&a.url).unwrap_or_else(|_| a.url.clone())
                 } else {
-                    nixe_news_core::canonical_url(&a.original_url).unwrap_or_else(|_| a.original_url.clone())
+                    nyx_news_core::canonical_url(&a.original_url).unwrap_or_else(|_| a.original_url.clone())
                 };
                 if !clean.is_empty() && seen_urls.contains(&clean) {
                     continue;
                 }
                 if !a.title.trim().is_empty()
-                    && seen_titles.iter().any(|(t, when)| nixe_news_core::same_story(&a.title, a.published_at, t, *when))
+                    && seen_titles.iter().any(|(t, when)| nyx_news_core::same_story(&a.title, a.published_at, t, *when))
                 {
                     continue;
                 }
@@ -751,7 +751,7 @@ fn section_header(name: &str, first: bool) -> gtk::Box {
     row
 }
 
-fn hero_card(article: &nixe_news_core::ArticleListItem, covers: &mut Vec<String>) -> gtk::Button {
+fn hero_card(article: &nyx_news_core::ArticleListItem, covers: &mut Vec<String>) -> gtk::Button {
     let button = gtk::Button::new();
     button.add_css_class("hero-card");
     button.set_hexpand(true);
@@ -816,7 +816,7 @@ fn hero_card(article: &nixe_news_core::ArticleListItem, covers: &mut Vec<String>
     button
 }
 
-fn story_card(article: &nixe_news_core::ArticleListItem, covers: &mut Vec<String>) -> gtk::Button {
+fn story_card(article: &nyx_news_core::ArticleListItem, covers: &mut Vec<String>) -> gtk::Button {
     let button = gtk::Button::new();
     button.add_css_class("story-card");
     button.set_size_request(200, -1);
@@ -857,12 +857,12 @@ fn story_card(article: &nixe_news_core::ArticleListItem, covers: &mut Vec<String
     button
 }
 
-fn is_external_article(article: &nixe_news_core::ArticleListItem) -> bool {
-    nixe_news_core::requires_publisher_site(&article.original_url)
+fn is_external_article(article: &nyx_news_core::ArticleListItem) -> bool {
+    nyx_news_core::requires_publisher_site(&article.original_url)
         || paths::unavailable_file(&article.id).exists()
 }
 
-fn cover(article: &nixe_news_core::ArticleListItem, width: i32, height: i32, covers: &mut Vec<String>) -> gtk::Widget {
+fn cover(article: &nyx_news_core::ArticleListItem, width: i32, height: i32, covers: &mut Vec<String>) -> gtk::Widget {
     let overlay = gtk::Overlay::new();
     overlay.add_css_class("cover-frame");
     overlay.set_size_request(width, height);
@@ -918,7 +918,7 @@ fn cover(article: &nixe_news_core::ArticleListItem, width: i32, height: i32, cov
     overlay.upcast()
 }
 
-fn compact_row(article: &nixe_news_core::ArticleListItem) -> gtk::Button {
+fn compact_row(article: &nyx_news_core::ArticleListItem) -> gtk::Button {
     let button = gtk::Button::new();
     button.add_css_class("compact-story-row");
     button.set_hexpand(true);

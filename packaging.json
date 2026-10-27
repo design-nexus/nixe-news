@@ -2,8 +2,8 @@
   "application": "news",
   "directory": "news",
   "packages": [
-    "nixe-news",
-    "nixe-news-glimpse"
+    "nyx-news",
+    "nyx-news-glimpse"
   ],
   "manifest": "Cargo.toml",
   "prepare": [],
@@ -14,9 +14,9 @@
       "test",
       "--locked",
       "-p",
-      "nixe-news",
+      "nyx-news",
       "--bin",
-      "nixe-news"
+      "nyx-news"
     ]
   ]
 }

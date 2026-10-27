@@ -170,7 +170,7 @@ pub fn get(input: &str, opts: &FetchOpts) -> Result<FetchResult> {
         .redirect(reqwest::redirect::Policy::none())
         .timeout(opts.timeout)
         .connect_timeout(Duration::from_secs(10))
-        .user_agent(opts.user_agent.as_deref().unwrap_or("NixeNews/0.1 (+https://github.com/design-nexus/nixe)"))
+        .user_agent(opts.user_agent.as_deref().unwrap_or("NyxNews/0.1 (+https://github.com/design-nexus/nyx)"))
         .build()
         .context("could not build the HTTP client")?;
     let mut current = start;

@@ -1,4 +1,4 @@
-//! Optional briefs from Nixe Assistant. This crate does not load a model.
+//! Optional briefs from Nyx Assistant. This crate does not load a model.
 //!
 //! A failure returns the article text unchanged. Clustering from the reader
 //! does not call this module.

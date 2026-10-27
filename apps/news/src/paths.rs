@@ -1,6 +1,6 @@
 //! Well-known locations. Every path honours the XDG overrides.
 
-pub use nixe_core::paths::*;
+pub use nyx_core::paths::*;
 
 use std::path::PathBuf;
 
@@ -13,7 +13,7 @@ pub fn content_cache() -> PathBuf {
 }
 
 pub fn cover_file(url: &str) -> PathBuf {
-    cache_dir().join("covers").join(nixe_news_core::cache_key(url))
+    cache_dir().join("covers").join(nyx_news_core::cache_key(url))
 }
 
 pub fn story_file(id: &str) -> PathBuf {

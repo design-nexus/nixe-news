@@ -13,8 +13,8 @@ use gtk::gdk;
 use gtk::gio;
 use gtk::glib;
 use gtk::prelude::*;
-use nixe_news_core::{ArticleListItem, Db, View, open};
-use nixe_ui::chrome;
+use nyx_news_core::{ArticleListItem, Db, View, open};
+use nyx_ui::chrome;
 use std::cell::{Cell, RefCell};
 use std::rc::Rc;
 
@@ -113,7 +113,7 @@ pub fn present(app: &gtk::Application, section: Option<&str>) {
                 prefs::update(|prefs| prefs.saw_headlines = true);
                 navigate(&View::All);
             } else {
-                let start = nixe_theme::start_page("all", &prefs::get().last_section);
+                let start = nyx_theme::start_page("all", &prefs::get().last_section);
                 navigate(&view_from_section(&start));
             }
         }
@@ -490,7 +490,7 @@ fn rebuild_nav() {
     list.append(&group);
 
     let disabled = prefs::get().disabled_categories;
-    let sections: Vec<_> = nixe_news_core::directory()
+    let sections: Vec<_> = nyx_news_core::directory()
         .map(|topics| topics.into_iter().map(|topic| topic.title).filter(|name| !disabled.contains(name)).collect::<Vec<_>>())
         .unwrap_or_default();
     for name in sections {
@@ -537,10 +537,10 @@ fn build(app: &gtk::Application) {
     let window = gtk::ApplicationWindow::builder().application(app).title("News").default_width(1120).default_height(800).build();
     window.add_css_class("news-window");
     window.set_titlebar(Some(&gtk::Box::new(gtk::Orientation::Horizontal, 0)));
-    window.set_icon_name(Some("io.github.design_nexus.nixe.News"));
-    nixe_ui::keys::install(
+    window.set_icon_name(Some("io.github.design_nexus.nyx.News"));
+    nyx_ui::keys::install(
         &window,
-        nixe_ui::keys::Common {
+        nyx_ui::keys::Common {
             settings: Some(settings_dialog::open),
             shortcuts: Some(show_shortcuts),
             close: true,
@@ -815,13 +815,13 @@ pub fn notify(title: &str, body: &str) {
     let Some(app) = window.application() else { return };
     let notification = gio::Notification::new(title);
     notification.set_body(Some(body));
-    notification.set_icon(&gio::ThemedIcon::new("io.github.design_nexus.nixe.News"));
+    notification.set_icon(&gio::ThemedIcon::new("io.github.design_nexus.nyx.News"));
     app.send_notification(Some("news-refresh"), &notification);
 }
 
 pub fn toast(message: &str) {
     let Some(ui) = ui() else {
-        eprintln!("nixe-news: {message}");
+        eprintln!("nyx-news: {message}");
         return;
     };
     let overlay = ui.borrow().overlay.clone();

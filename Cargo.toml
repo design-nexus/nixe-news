@@ -1,12 +1,12 @@
 [workspace]
 resolver = "3"
-members = ["apps/news", "apps/news-glimpse", "crates/nixe-news-core"]
+members = ["apps/news", "apps/news-glimpse", "crates/nyx-news-core"]
 
 [workspace.package]
 edition = "2024"
 license = "MIT"
 authors = ["Ken Smith"]
-repository = "https://github.com/design-nexus/nixe-news"
+repository = "https://github.com/design-nexus/nyx-news"
 
 [profile.release]
 lto = "thin"

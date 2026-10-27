@@ -6,7 +6,7 @@ use crate::widgets;
 use crate::window;
 use crate::worker;
 use gtk::prelude::*;
-use nixe_ui::clamp::Clamp;
+use nyx_ui::clamp::Clamp;
 use std::cell::RefCell;
 
 thread_local! {
@@ -24,7 +24,7 @@ pub fn populate(host: &gtk::Box) {
     let back = crate::widgets::bar_button("go-previous-symbolic", "Back to stories");
     back.connect_clicked(|_| {
         timeline::show_list();
-        window::navigate(&nixe_news_core::View::All);
+        window::navigate(&nyx_news_core::View::All);
     });
     toolbar.append(&back);
 
@@ -54,7 +54,7 @@ pub fn populate(host: &gtk::Box) {
 
     let followed = window::with_db(|db| db.smart_filters()).unwrap_or_default();
     let subscribed = window::with_db(|db| db.feeds()).unwrap_or_default();
-    let topics = nixe_news_core::directory().unwrap_or_default();
+    let topics = nyx_news_core::directory().unwrap_or_default();
 
     for topic in topics {
         let topic_group = widgets::vbox(0);
@@ -181,7 +181,7 @@ pub fn populate(host: &gtk::Box) {
     host.append(&scroll);
 }
 
-pub fn show_found(feeds: Vec<nixe_news_core::DiscoveredFeed>) {
+pub fn show_found(feeds: Vec<nyx_news_core::DiscoveredFeed>) {
     let Some(box_) = FOUND.with(|slot| slot.borrow().clone()) else { return };
     while let Some(child) = box_.first_child() {
         box_.remove(&child);

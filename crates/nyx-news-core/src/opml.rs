@@ -32,7 +32,7 @@ fn attr(node: &Node<'_, '_>, name: &str) -> Option<String> {
 
 pub fn write(outlines: &[Outline]) -> String {
     let mut body = String::from(
-        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<opml version=\"2.0\">\n  <head><title>Nixe News</title></head>\n  <body>\n",
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<opml version=\"2.0\">\n  <head><title>Nyx News</title></head>\n  <body>\n",
     );
     for outline in outlines {
         write_outline(&mut body, outline, 4);

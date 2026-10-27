@@ -13,7 +13,7 @@ use crate::widgets;
 use crate::window;
 use crate::worker;
 use gtk::prelude::*;
-use nixe_news_core::{AiFailure, ArticleListItem, Excerpt, finish};
+use nyx_news_core::{AiFailure, ArticleListItem, Excerpt, finish};
 use std::cell::{Cell, RefCell};
 
 thread_local! {

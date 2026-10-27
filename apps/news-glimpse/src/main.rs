@@ -2,7 +2,7 @@
 
 use anyhow::{Result, bail};
 use glimpse_plugin_sdk::{Action, Hit, Request, serve};
-use nixe_news_core::{library_query, open_readonly};
+use nyx_news_core::{library_query, open_readonly};
 use serde_json::{Value, json};
 use std::path::PathBuf;
 
@@ -14,13 +14,13 @@ fn main() {
 }
 
 fn library() -> PathBuf {
-    if let Some(path) = std::env::var_os("NIXE_NEWS_DB") {
+    if let Some(path) = std::env::var_os("NYX_NEWS_DB") {
         return PathBuf::from(path);
     }
     let data = std::env::var_os("XDG_DATA_HOME")
         .map(PathBuf::from)
         .or_else(|| std::env::var_os("HOME").map(|home| PathBuf::from(home).join(".local/share")));
-    data.unwrap_or_else(|| PathBuf::from(".local/share")).join("nixe-news/news.sqlite")
+    data.unwrap_or_else(|| PathBuf::from(".local/share")).join("nyx-news/news.sqlite")
 }
 
 fn answer(request: &Request) -> Result<Value> {
@@ -64,7 +64,7 @@ fn answer(request: &Request) -> Result<Value> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use nixe_news_core::{Ingest, NewFeed, View, open, parse_feed};
+    use nyx_news_core::{Ingest, NewFeed, View, open, parse_feed};
     use std::sync::Mutex;
 
     static LOCK: Mutex<()> = Mutex::new(());
@@ -80,7 +80,7 @@ mod tests {
     #[test]
     fn search_and_preview_read_the_library() {
         let _guard = LOCK.lock().unwrap();
-        let dir = std::env::temp_dir().join(format!("nixe-news-glimpse-{}", std::process::id()));
+        let dir = std::env::temp_dir().join(format!("nyx-news-glimpse-{}", std::process::id()));
         std::fs::create_dir_all(&dir).unwrap();
         let path = dir.join("news.sqlite");
         let saved = {
@@ -107,7 +107,7 @@ mod tests {
             saved
         };
         // SAFETY: the test lock is held, and this process is the only reader of the variable.
-        unsafe { std::env::set_var("NIXE_NEWS_DB", &path) };
+        unsafe { std::env::set_var("NYX_NEWS_DB", &path) };
 
         let hits = answer(&request("search", json!({"query": "news", "limit": 10}))).unwrap();
         assert_eq!(hits.as_array().unwrap().len(), 2);
@@ -121,7 +121,7 @@ mod tests {
         assert!(text.contains("Example"));
         assert!(text.contains("Saved text"));
 
-        unsafe { std::env::remove_var("NIXE_NEWS_DB") };
+        unsafe { std::env::remove_var("NYX_NEWS_DB") };
         let _ = std::fs::remove_dir_all(dir);
     }
 

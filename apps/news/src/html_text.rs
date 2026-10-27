@@ -1,6 +1,6 @@
 //! Turn sanitized feed HTML into plain text for the GTK reader.
 
-use nixe_news_core::decode_entities;
+use nyx_news_core::decode_entities;
 
 pub fn plain(html: &str) -> String {
     let mut out = String::new();

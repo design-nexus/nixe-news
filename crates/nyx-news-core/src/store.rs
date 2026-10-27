@@ -7,7 +7,7 @@ use crate::opml::{self, Outline};
 use crate::search::fts_match;
 use crate::sync::{op_from_row, op_name, preference_fields, project};
 use anyhow::Result;
-use nixe_sync::{Clock, Hlc, Op, OpKind, State, merge};
+use nyx_sync::{Clock, Hlc, Op, OpKind, State, merge};
 use rusqlite::{Connection, OpenFlags, OptionalExtension, params};
 use std::fs;
 use std::path::{Path, PathBuf};
@@ -1143,7 +1143,7 @@ mod tests {
     use crate::parse::parse_feed;
 
     fn db() -> (Db, PathBuf) {
-        let dir = std::env::temp_dir().join(format!("nixe-news-{}", Uuid::new_v4()));
+        let dir = std::env::temp_dir().join(format!("nyx-news-{}", Uuid::new_v4()));
         fs::create_dir_all(&dir).unwrap();
         let db = open(&dir.join("news.sqlite")).unwrap();
         (db, dir)

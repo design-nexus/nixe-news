@@ -20,7 +20,7 @@ pub fn build(page: &Page) {
 
 fn window_group(page: &Page) {
     let group = page.group("News window");
-    group.add(&nixe_ui::widgets::start_row());
+    group.add(&nyx_ui::widgets::start_row());
     let prefs = prefs::get();
     let options: Vec<(String, String)> = theme::all().iter().map(|t| (t.id.clone(), t.name.clone())).collect();
     let (theme_row, theme_dd) =
@@ -114,7 +114,7 @@ fn reading(page: &Page) {
     group.add(&widgets::row("Keep articles", "Days to keep articles that are not starred or saved.", Some(spin.upcast_ref())));
     let (row, _) = widgets::switch_row(
         "Assistant can follow topics",
-        "Let Nixe Assistant follow topics and channels on your behalf.",
+        "Let Nyx Assistant follow topics and channels on your behalf.",
         prefs.assistant_can_subscribe,
         |on| prefs::update(|p| p.assistant_can_subscribe = on),
     );
@@ -124,7 +124,7 @@ fn reading(page: &Page) {
 fn categories(page: &Page) {
     let group = page.group("News Topics");
     group.note("Choose which topic shelves appear on your front page and sidebar.");
-    let all_topics = nixe_news_core::directory()
+    let all_topics = nyx_news_core::directory()
         .map(|topics| topics.into_iter().map(|topic| topic.title).collect::<Vec<_>>())
         .unwrap_or_default();
     for topic_name in all_topics {
@@ -200,12 +200,12 @@ fn sync(page: &Page) {
         prefs::update(|prefs| prefs.username = text);
     });
     group.add(&field_row("Username", "", &username));
-    let folder = text_field("Nixe/News", &prefs.folder);
+    let folder = text_field("Nyx/News", &prefs.folder);
     folder.connect_changed(|entry| {
         let text = entry.text().to_string();
         prefs::update(|prefs| prefs.folder = text);
     });
-    group.add(&field_row("Folder", "Path inside the account. Nixe/News is the usual place.", &folder));
+    group.add(&field_row("Folder", "Path inside the account. Nyx/News is the usual place.", &folder));
     let password = gtk::PasswordEntry::builder().show_peek_icon(true).hexpand(true).build();
     password.set_placeholder_text(Some("App password"));
     password.connect_activate(move |entry| {
@@ -292,11 +292,11 @@ fn field_row(title: &str, desc: &str, control: &impl IsA<gtk::Widget>) -> gtk::B
 
 fn keyring_has_password() -> bool {
     let Ok(device) = window::with_db(|db| db.device_id()) else { return false };
-    nixe_sync::lookup_secret("nixe-news", &device, "nextcloud").is_ok()
+    nyx_sync::lookup_secret("nyx-news", &device, "nextcloud").is_ok()
 }
 
 fn save_password(text: &str) -> bool {
-    let Ok(secret) = nixe_sync::Secret::new(text.trim()) else {
+    let Ok(secret) = nyx_sync::Secret::new(text.trim()) else {
         window::toast("That password cannot be stored.");
         return false;
     };
@@ -304,7 +304,7 @@ fn save_password(text: &str) -> bool {
         window::toast("News could not open its library.");
         return false;
     };
-    if nixe_sync::store_secret("nixe-news", &device, "nextcloud", &secret).is_err() {
+    if nyx_sync::store_secret("nyx-news", &device, "nextcloud", &secret).is_err() {
         window::toast("The keyring did not store the password.");
         return false;
     }
@@ -319,8 +319,8 @@ fn intelligence(page: &Page) {
     let (row, switch) =
         widgets::switch_row("Recommendations", "Show a For You page from what you read.", prefs::get().recommendations, |on| {
             prefs::update(|prefs| prefs.recommendations = on);
-            if !on && window::view() == nixe_news_core::View::ForYou {
-                window::navigate(&nixe_news_core::View::All);
+            if !on && window::view() == nyx_news_core::View::ForYou {
+                window::navigate(&nyx_news_core::View::All);
             } else {
                 window::refresh_lists();
             }
@@ -329,7 +329,7 @@ fn intelligence(page: &Page) {
     group.add(&row);
     let (row, switch) = widgets::switch_row(
         "Summaries",
-        "Ask Nixe Assistant for an original summary. The article stays on screen if Assistant is down.",
+        "Ask Nyx Assistant for an original summary. The article stays on screen if Assistant is down.",
         prefs::get().summaries,
         |on| {
             prefs::update(|prefs| prefs.summaries = on);

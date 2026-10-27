@@ -4,7 +4,7 @@ use crate::widgets;
 use crate::window;
 use crate::worker;
 use gtk::prelude::*;
-use nixe_news_core::canonical_url;
+use nyx_news_core::canonical_url;
 
 pub fn add_feed() {
     let (dialog, card) = widgets::dialog("Add a feed", 480);
@@ -92,7 +92,7 @@ pub fn export_markdown(window: &gtk::ApplicationWindow, markdown: String, name: 
 pub fn export_opml(window: &gtk::ApplicationWindow) {
     let dialog = gtk::FileDialog::new();
     dialog.set_title("Export OPML");
-    dialog.set_initial_name(Some("nixe-news.opml"));
+    dialog.set_initial_name(Some("nyx-news.opml"));
     let parent = window.clone();
     dialog.save(Some(&parent), None::<&gtk::gio::Cancellable>, move |result| {
         let Ok(file) = result else { return };

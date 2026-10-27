@@ -1,11 +1,11 @@
-//! Tools Nixe Assistant can call while News is open.
+//! Tools Nyx Assistant can call while News is open.
 
 use crate::note;
 use crate::prefs;
 use crate::window;
 use crate::worker;
-use nixe_core::control::{Reply, text};
-use nixe_news_core::View;
+use nyx_core::control::{Reply, text};
+use nyx_news_core::View;
 use serde_json::{Value, json};
 
 pub fn tools() -> Value {
@@ -43,7 +43,7 @@ fn headlines(args: &Value) -> Result<Value, String> {
     window::with_db(|db| db.articles(&view, "", 20, 0)).map(list).map_err(|e| e.to_string())
 }
 
-fn list(items: Vec<nixe_news_core::ArticleListItem>) -> Value {
+fn list(items: Vec<nyx_news_core::ArticleListItem>) -> Value {
     json!(
         items
             .into_iter()
@@ -69,7 +69,7 @@ fn add_feed(args: &Value) -> Result<Value, String> {
 
 fn export_markdown(args: &Value) -> Result<Value, String> {
     let id = text(args, "id")?;
-    let path = nixe_core::control::save_target(args)?;
+    let path = nyx_core::control::save_target(args)?;
     let article =
         window::with_db(|db| db.article(&id)).map_err(|err| err.to_string())?.ok_or("that article is not in the library")?;
     let markdown = note::markdown(&article);

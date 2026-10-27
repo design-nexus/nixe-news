@@ -1,6 +1,6 @@
-//! This app's own preferences (`~/.config/nixe-news/settings.toml`).
+//! This app's own preferences (`~/.config/nyx-news/settings.toml`).
 
-pub use nixe_theme::ThemeMode;
+pub use nyx_theme::ThemeMode;
 
 use serde::{Deserialize, Serialize};
 
@@ -40,7 +40,7 @@ pub struct Prefs {
     pub sync_enabled: bool,
     pub server: String,
     pub username: String,
-    /// Folder inside the Nextcloud account. Empty means `Nixe/News`.
+    /// Folder inside the Nextcloud account. Empty means `Nyx/News`.
     pub folder: String,
     /// Disabled categories that shouldn't appear in sidebar or paper.
     pub disabled_categories: Vec<String>,
@@ -74,7 +74,7 @@ impl Default for Prefs {
             sync_enabled: false,
             server: String::new(),
             username: String::new(),
-            folder: "Nixe/News".into(),
+            folder: "Nyx/News".into(),
             disabled_categories: Vec::new(),
             reader_font_scale: "medium".into(),
             reader_font: "serif".into(),
@@ -82,4 +82,4 @@ impl Default for Prefs {
     }
 }
 
-nixe_core::prefs_store!(Prefs);
+nyx_core::prefs_store!(Prefs);

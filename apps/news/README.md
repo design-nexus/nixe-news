@@ -18,15 +18,15 @@ service, and it does not load an AI model to open or search articles.
 
 Feeds refresh in the background about once an hour (15 minutes at the shortest). A feed
 that fails waits longer before the next try. Full article text from the feed is cached
-under `~/.cache/nixe-news/` when “Keep feed content” is on.
+under `~/.cache/nyx-news/` when “Keep feed content” is on.
 
 ## Where things live
 
 | | |
 | --- | --- |
-| Settings | `~/.config/nixe-news/settings.toml` |
-| Library | `~/.local/share/nixe-news/news.sqlite` |
-| Cache | `~/.cache/nixe-news/` |
+| Settings | `~/.config/nyx-news/settings.toml` |
+| Library | `~/.local/share/nyx-news/news.sqlite` |
+| Cache | `~/.cache/nyx-news/` |
 
 Sync, publication discovery, and local summaries are reserved in the schema and the
 settings card. They are off in this version.

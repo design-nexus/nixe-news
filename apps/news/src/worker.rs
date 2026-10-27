@@ -4,8 +4,8 @@
 use crate::paths;
 use crate::prefs;
 use crate::window;
-use nixe_news_core::{AiFailure, Excerpt, FetchOpts, FetchResult, Ingest, NewFeed, ask, canonical_url, get, open, parse_feed};
-use nixe_sync::delay;
+use nyx_news_core::{AiFailure, Excerpt, FetchOpts, FetchResult, Ingest, NewFeed, ask, canonical_url, get, open, parse_feed};
+use nyx_sync::delay;
 use std::sync::OnceLock;
 use std::time::{SystemTime, UNIX_EPOCH};
 use tokio::sync::mpsc;
@@ -164,7 +164,7 @@ pub fn open_section(name: String) {
 
 pub fn refresh_current() {
     let id = match window::view() {
-        nixe_news_core::View::Feed(id) => Some(id),
+        nyx_news_core::View::Feed(id) => Some(id),
         _ => None,
     };
     if let Some(tx) = TX.get() {
@@ -186,7 +186,7 @@ fn on_main(f: impl FnOnce() + Send + 'static) {
 fn opts(url: &str) -> FetchOpts {
     FetchOpts {
         allow_http: url.trim().starts_with("http://"),
-        allow_private: std::env::var_os("NIXE_NEWS_ALLOW_PRIVATE").is_some(),
+        allow_private: std::env::var_os("NYX_NEWS_ALLOW_PRIVATE").is_some(),
         ..FetchOpts::default()
     }
 }
@@ -226,11 +226,11 @@ async fn find_feeds_now(url: String) {
     }
 }
 
-fn lookup_feeds(url: &str) -> anyhow::Result<Vec<nixe_news_core::DiscoveredFeed>> {
+fn lookup_feeds(url: &str) -> anyhow::Result<Vec<nyx_news_core::DiscoveredFeed>> {
     let fetched = get(url, &opts(url))?;
-    let nixe_news_core::FetchResult::Body(body) = fetched else { anyhow::bail!("the page was empty") };
+    let nyx_news_core::FetchResult::Body(body) = fetched else { anyhow::bail!("the page was empty") };
     let html = String::from_utf8_lossy(&body.bytes);
-    nixe_news_core::discover_in_html(&html, &body.final_url)
+    nyx_news_core::discover_in_html(&html, &body.final_url)
 }
 
 fn ingest_new(url: &str, category: Option<&str>) -> anyhow::Result<String> {
@@ -273,7 +273,7 @@ async fn open_section_now(name: String) {
 }
 
 async fn bring_in(section: Option<String>) {
-    let wanted = nixe_news_core::directory_sources()
+    let wanted = nyx_news_core::directory_sources()
         .into_iter()
         .filter(|source| section.as_ref().is_none_or(|name| source.section == *name))
         .map(|source| (source.url, source.section))
@@ -301,7 +301,7 @@ async fn bring_in(section: Option<String>) {
 fn cover_opts(url: &str) -> FetchOpts {
     FetchOpts {
         allow_http: url.trim().starts_with("http://"),
-        allow_private: std::env::var_os("NIXE_NEWS_ALLOW_PRIVATE").is_some(),
+        allow_private: std::env::var_os("NYX_NEWS_ALLOW_PRIVATE").is_some(),
         allow_host_change: true,
         max_bytes: 10 * 1024 * 1024,
         timeout: std::time::Duration::from_secs(12),
@@ -349,7 +349,7 @@ async fn fetch_covers(urls: Vec<String>) {
 fn story_opts(url: &str) -> FetchOpts {
     FetchOpts {
         allow_http: url.trim().starts_with("http://"),
-        allow_private: std::env::var_os("NIXE_NEWS_ALLOW_PRIVATE").is_some(),
+        allow_private: std::env::var_os("NYX_NEWS_ALLOW_PRIVATE").is_some(),
         allow_host_change: true,
         max_bytes: 4 * 1024 * 1024,
         user_agent: Some(
@@ -377,8 +377,8 @@ async fn fetch_story(id: String, url: String) {
         return;
     };
     let html = String::from_utf8_lossy(&body.bytes);
-    if let Some(og_image) = nixe_news_core::extract_og_image(&html) {
-        let upgraded = nixe_news_core::upgrade_image_url(&og_image);
+    if let Some(og_image) = nyx_news_core::extract_og_image(&html) {
+        let upgraded = nyx_news_core::upgrade_image_url(&og_image);
         let id_c = id.clone();
         let og_c = upgraded.clone();
         on_main(move || {
@@ -386,7 +386,7 @@ async fn fetch_story(id: String, url: String) {
         });
         tokio::spawn(async move { fetch_covers(vec![upgraded]).await; });
     }
-    let text = nixe_news_core::article_text(&html);
+    let text = nyx_news_core::article_text(&html);
     if text.len() < 400 {
         if let Some(parent) = paths::unavailable_file(&id).parent() {
             let _ = std::fs::create_dir_all(parent);
@@ -415,8 +415,8 @@ async fn discover_images_job(items: Vec<(String, String)>) {
             let fetched = tokio::task::spawn_blocking(move || get(&url, &opts)).await;
             if let Ok(Ok(FetchResult::Body(body))) = fetched {
                 let html = String::from_utf8_lossy(&body.bytes);
-                if let Some(img) = nixe_news_core::extract_og_image(&html) {
-                    let upgraded = nixe_news_core::upgrade_image_url(&img);
+                if let Some(img) = nyx_news_core::extract_og_image(&html) {
+                    let upgraded = nyx_news_core::upgrade_image_url(&img);
                     return Some((id, upgraded));
                 }
             }
@@ -483,7 +483,7 @@ async fn refresh_id(id: String) {
         let db = open(&paths::library_db())?;
         let Some(row) = db.feed(&id)? else { return Ok(None) };
         let (etag, last_modified) = db.validators(&id)?;
-        Ok(Some(refresh_feed(nixe_news_core::DueFeed {
+        Ok(Some(refresh_feed(nyx_news_core::DueFeed {
             id: row.id,
             url: row.url,
             etag,
@@ -539,7 +539,7 @@ fn report_refresh(notes: &[RefreshNote]) {
     }
 }
 
-fn refresh_feed(feed: nixe_news_core::DueFeed) -> anyhow::Result<RefreshNote> {
+fn refresh_feed(feed: nyx_news_core::DueFeed) -> anyhow::Result<RefreshNote> {
     let mut db = open(&paths::library_db())?;
     let feed_title = db.feed(&feed.id)?.map(|row| row.title).unwrap_or_else(|| feed.url.clone());
     let before = db.article_count()?;
@@ -570,7 +570,7 @@ fn refresh_feed(feed: nixe_news_core::DueFeed) -> anyhow::Result<RefreshNote> {
     Ok(RefreshNote { added, feed: feed_title, error })
 }
 
-fn note_failure(db: &mut nixe_news_core::Db, feed: &nixe_news_core::DueFeed, message: &str) -> anyhow::Result<()> {
+fn note_failure(db: &mut nyx_news_core::Db, feed: &nyx_news_core::DueFeed, message: &str) -> anyhow::Result<()> {
     let wait = delay((feed.consecutive_failures as u32).saturating_add(1), None).wait;
     let now = SystemTime::now().duration_since(UNIX_EPOCH).map(|d| d.as_secs() as i64).unwrap_or(0);
     db.mark_failure(&feed.id, message, now + wait.as_secs() as i64)?;
@@ -609,9 +609,9 @@ fn run_sync() -> anyhow::Result<std::collections::BTreeMap<String, String>> {
     }
     let mut db = open(&paths::library_db())?;
     let device = db.device_id()?;
-    let password = nixe_sync::lookup_secret("nixe-news", &device, "nextcloud")?;
-    let folder = if prefs.folder.trim().is_empty() { "Nixe/News".to_string() } else { prefs.folder.clone() };
-    let remote = nixe_sync::WebDav::new(nixe_sync::WebDavConfig {
+    let password = nyx_sync::lookup_secret("nyx-news", &device, "nextcloud")?;
+    let folder = if prefs.folder.trim().is_empty() { "Nyx/News".to_string() } else { prefs.folder.clone() };
+    let remote = nyx_sync::WebDav::new(nyx_sync::WebDavConfig {
         server: prefs.server.clone(),
         username: prefs.username.clone(),
         password,
@@ -626,7 +626,7 @@ fn run_sync() -> anyhow::Result<std::collections::BTreeMap<String, String>> {
     let mark = if prefs.mark_read_on_open { "true" } else { "false" };
     let recommendations = if prefs.recommendations { "true" } else { "false" };
     let summaries = if prefs.summaries { "true" } else { "false" };
-    nixe_news_core::synchronize(
+    nyx_news_core::synchronize(
         &mut db,
         &remote,
         &[
@@ -665,7 +665,7 @@ fn sync_error(err: &str) -> String {
     if line.len() > 160 { "Sync failed.".to_string() } else { line.to_string() }
 }
 
-fn retain(db: &mut nixe_news_core::Db) -> anyhow::Result<()> {
+fn retain(db: &mut nyx_news_core::Db) -> anyhow::Result<()> {
     let now = SystemTime::now().duration_since(UNIX_EPOCH).map(|d| d.as_secs() as i64).unwrap_or(0);
     db.retain(prefs::get().retention_days, now)?;
     Ok(())

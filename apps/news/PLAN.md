@@ -1,34 +1,34 @@
-# Nixe News
+# Nyx News
 
-Native RSS reader and news browser for the Nixe suite. Repository is the existing workspace `design-nexus/nixe` at `/home/ken/Projects/nixe`. News is a new app in that workspace, not a new repository and not a separate service.
+Native RSS reader and news browser for the Nyx suite. Repository is the existing workspace `design-nexus/nyx` at `/home/ken/Projects/nyx`. News is a new app in that workspace, not a new repository and not a separate service.
 
 Phase 1 is the only implementation this plan authorizes. Later phases are specified so the schema and crate boundaries do not have to be rewritten, and they stay unbuilt until the previous phase is accepted.
 
 ## Decisions from the existing tree
 
-`STYLE.md` is the visual contract. Music is the sidebar reference. Settings is the settings-card reference. Shared behavior comes from `nixe-core`, `nixe-theme`, `nixe-ui`, and `nixe-icons`. Every current app is GTK 4 (`gtk4` 0.11, feature `v4_18`) with no libadwaita and no WebKit. News follows that. Adwaita widgets and a web shell would replace the flat monospace surface the suite already shares.
+`STYLE.md` is the visual contract. Music is the sidebar reference. Settings is the settings-card reference. Shared behavior comes from `nyx-core`, `nyx-theme`, `nyx-ui`, and `nyx-icons`. Every current app is GTK 4 (`gtk4` 0.11, feature `v4_18`) with no libadwaita and no WebKit. News follows that. Adwaita widgets and a web shell would replace the flat monospace surface the suite already shares.
 
-There is no shared cloud-account service. Settings → Accounts is the operating-system user. Git and Theater keep provider secrets in the desktop Secret Service through `secret-tool`, with attributes and a redacted `Secret` type (`apps/git/src/providers/credentials.rs`). News uses that same shape, moved into `nixe-sync` so later apps can call it. Passwords, URLs of tokens, and token material stay out of `settings.toml`, SQLite, logs, and the command line.
+There is no shared cloud-account service. Settings → Accounts is the operating-system user. Git and Theater keep provider secrets in the desktop Secret Service through `secret-tool`, with attributes and a redacted `Secret` type (`apps/git/src/providers/credentials.rs`). News uses that same shape, moved into `nyx-sync` so later apps can call it. Passwords, URLs of tokens, and token material stay out of `settings.toml`, SQLite, logs, and the command line.
 
-Assistant integration today is per-app D-Bus, not a shared model loader. `nixe_core::control` registers `io.github.design_nexus.nixe.Control` with `Describe` and `Call` on the app’s own bus name. Handlers run on the GTK thread, so News answers them by scheduling work and replying later (`serve_async`), the way Music does. Assistant’s own IPC `Say` speaks through TTS. It is not a silent completion API. Notes and Reminders are Assistant abilities with private SQLite files, not desktop apps.
+Assistant integration today is per-app D-Bus, not a shared model loader. `nyx_core::control` registers `io.github.design_nexus.nyx.Control` with `Describe` and `Call` on the app’s own bus name. Handlers run on the GTK thread, so News answers them by scheduling work and replying later (`serve_async`), the way Music does. Assistant’s own IPC `Say` speaks through TTS. It is not a silent completion API. Notes and Reminders are Assistant abilities with private SQLite files, not desktop apps.
 
 Glimpse plugins are sandboxed JSON-lines processes (`apps/glimpse/PLUGIN_API.md`, `crates/glimpse-plugin-sdk`). They search and return plain text. They do not embed GTK.
 
 SQLite in this repo is `rusqlite` 0.40 with `bundled`. Weather’s HTTP client is blocking `reqwest` 0.12 with `rustls-tls`. Music’s podcast client is blocking `ureq` plus a small `roxmltree` RSS parser aimed at audio enclosures. That parser is not a general news reader and stays in Music.
 
-Theme, density, text size, and “open on” already live in `~/.config/nixe/theme.toml` and follow every open app. News does not invent a second theme store.
+Theme, density, text size, and “open on” already live in `~/.config/nyx/theme.toml` and follow every open app. News does not invent a second theme store.
 
 ## What the app is
 
 | | |
 | --- | --- |
-| Package | `nixe-news` |
-| Binary | `nixe-news` |
-| App id | `io.github.design_nexus.nixe.News` |
-| Slug | `nixe-news` via `nixe_core::app::init` |
-| Config | `~/.config/nixe-news/settings.toml` |
-| Library | `~/.local/share/nixe-news/news.sqlite` |
-| Cache | `~/.cache/nixe-news/` (bodies, images, HTTP validators) |
+| Package | `nyx-news` |
+| Binary | `nyx-news` |
+| App id | `io.github.design_nexus.nyx.News` |
+| Slug | `nyx-news` via `nyx_core::app::init` |
+| Config | `~/.config/nyx-news/settings.toml` |
+| Library | `~/.local/share/nyx-news/news.sqlite` |
+| Cache | `~/.cache/nyx-news/` (bodies, images, HTTP validators) |
 | Window | Music’s frame: sidebar head, 250 px navigation, toolbar, virtualized list, status bar, settings card. Default 1120×800. Tiled, not floating. |
 
 Sidebar groups, in order:
@@ -47,14 +47,14 @@ Core reading works with recommendations off, AI off, sync off, and no network af
 ## Crate layout
 
 ```
-crates/nixe-sync/            # no GTK, no news types
-crates/nixe-news-core/       # no GTK
+crates/nyx-sync/            # no GTK, no news types
+crates/nyx-news-core/       # no GTK
 apps/news/                   # GTK shell
 ```
 
-`nixe-sync` is a workspace crate, same as `nixe-weather-core` and `nixe-media-cache`. A second repository would duplicate edition, license, and CI for a library only Nixe apps link. Its public surface is records, a journal, merge policies, credentials, and a provider trait. News maps its rows onto that surface in `nixe-news-core`. Notes and Reminders can do the same later without linking the news crate.
+`nyx-sync` is a workspace crate, same as `nyx-weather-core` and `nyx-media-cache`. A second repository would duplicate edition, license, and CI for a library only Nyx apps link. Its public surface is records, a journal, merge policies, credentials, and a provider trait. News maps its rows onto that surface in `nyx-news-core`. Notes and Reminders can do the same later without linking the news crate.
 
-### `nixe-sync`
+### `nyx-sync`
 
 | Module | Role |
 | --- | --- |
@@ -82,7 +82,7 @@ trait SyncProvider {
 
 A failed call returns `Err`. It does not write a partial manifest. Callers apply remote batches inside one SQLite transaction and advance the checkpoint in that same transaction.
 
-### `nixe-news-core`
+### `nyx-news-core`
 
 | Module | Phase | Role |
 | --- | --- | --- |
@@ -104,7 +104,7 @@ A failed call returns `Err`. It does not write a partial manifest. Callers apply
 
 Match the app pattern in `CLAUDE.md`: `paths.rs`, `cmd.rs`, `prefs.rs`, `theme.rs`, and `widgets.rs` re-export the shared crates. Local modules: `window.rs`, `sidebar.rs`, `timeline.rs`, `reader.rs`, `feeds.rs`, `settings_dialog.rs`, `control.rs`, `worker.rs`. `worker.rs` is the only place that starts Tokio and crosses back to GTK with `glib::idle_add_local_once` or a channel drained on the main context.
 
-`install.sh` gains a `news` arm (`ids="News"`, dependency `libsecret`) and `news` in `ALL`. `nixe-icons/make_icons.py` gains one glyph. README’s app table gains one row. `apps/news/CLAUDE.md` records the bus name, database path, and test environment variables.
+`install.sh` gains a `news` arm (`ids="News"`, dependency `libsecret`) and `news` in `ALL`. `nyx-icons/make_icons.py` gains one glyph. README’s app table gains one row. `apps/news/CLAUDE.md` records the bus name, database path, and test environment variables.
 
 ## Libraries
 
@@ -114,7 +114,7 @@ Pinned to versions already used in the workspace where they exist. New crates ar
 | --- | --- | --- |
 | UI | `gtk4` 0.11, `v4_18` | Suite standard |
 | Async | `tokio` runtime owned by `worker.rs` | Cancellation, bounded concurrency, timeouts off the main thread |
-| HTTP | `reqwest` 0.12, `rustls-tls`, no native-tls | Already in `nixe-weather-core`. No OpenSSL |
+| HTTP | `reqwest` 0.12, `rustls-tls`, no native-tls | Already in `nyx-weather-core`. No OpenSSL |
 | Feeds | `feed-rs` 2.4 | RSS 2.0, RSS 1.0, Atom, JSON Feed. Released July 2026. 3.0 (September 2026) changes the model; stay on 2.4 until a separate upgrade |
 | HTML | `ammonia` 4.2 | Allowlist sanitizer. Released October 2026. Used directly so the allowlist is ours. `feed-rs`’s `sanitize` feature stays off |
 | Autodiscovery | `scraper` | `<link rel="alternate">` only, Phase 3 |
@@ -126,13 +126,13 @@ Pinned to versions already used in the workspace where they exist. New crates ar
 | OPML | `roxmltree` | Already in Music. OPML is small and tested with fixtures. No new XML stack |
 | Readability | none in Phase 1 | Full-text extraction is user-initiated and later. Re-evaluate a maintained extractor then. Music’s RSS parser is not reused |
 
-Rejected for the core app: Electron, Tauri, a WebKit document view, libadwaita, a Nixe-operated directory server, loading Gemma or Kokoro inside `nixe-news`, and storing Nextcloud passwords in TOML.
+Rejected for the core app: Electron, Tauri, a WebKit document view, libadwaita, a Nyx-operated directory server, loading Gemma or Kokoro inside `nyx-news`, and storing Nextcloud passwords in TOML.
 
 ## Data model
 
 One user database, `news.sqlite`, `journal_mode=WAL`, `foreign_keys=ON`. `PRAGMA user_version` starts at 1. Each migration is a function in a list, applied inside a transaction, then the version is set. A failing migration rolls back. Tests open a temp file and walk every version.
 
-Cache files live under `~/.cache/nixe-news/` and are disposable. Deleting the cache loses images and extracted HTML. It does not lose subscriptions, read state, stars, or tags.
+Cache files live under `~/.cache/nyx-news/` and are disposable. Deleting the cache loses images and extracted HTML. It does not lose subscriptions, read state, stars, or tags.
 
 Article identity is `(feed_id, item_key)`. `item_key` is the feed entry id when the feed provides one, otherwise the canonical URL. Canonical URL: `http`/`https` only, lowercase host, default ports removed, fragment removed, a fixed list of tracking parameters removed (`utm_*`, `fbclid`, `mc_cid`, `mc_eid`). The original URL is kept for the source link.
 
@@ -256,11 +256,11 @@ Content the feed includes (`content:encoded`, Atom content, JSON Feed `content_h
 
 Synchronized collections: folders, feeds (url, title, folder, position, poll, disabled, tombstone), article_state for saved/starred/read/progress, tags, article_tags, followed categories, smart filters, and an allowlist of preferences (retention days, layout, refresh interval, AI enabled, recommendations enabled).
 
-Not synchronized: article bodies, images, embeddings, HTTP validators, last error strings, window geometry, “follow Omarchy”, or anything already in `~/.config/nixe/theme.toml`.
+Not synchronized: article bodies, images, embeddings, HTTP validators, last error strings, window geometry, “follow Omarchy”, or anything already in `~/.config/nyx/theme.toml`.
 
 ### Remote WebDAV layout
 
-Under a configurable folder, default `/Nixe/News/`:
+Under a configurable folder, default `/Nyx/News/`:
 
 ```
 manifest.json
@@ -297,7 +297,7 @@ Optional encryption wraps the batch bytes with `age` to a recipient whose identi
 
 Apply order is HLC, not arrival order. The local database changes only inside the transaction that also records the new checkpoint. If the process dies mid-sync, WAL recovery keeps the previous checkpoint and the client retries. Remote batches that were PUT and then failed to update the manifest are immutable and unused until a later manifest names them. Orphan batches are ignored.
 
-Nextcloud authentication is an app password (Nextcloud → Settings → Security → Devices & sessions) plus the server URL and username. The password is stored with `secret-tool` attributes `application=nixe-news`, `kind=nextcloud`, `account=<uuid>`. Basic auth over HTTPS only. HTTP URLs are rejected. Redirects that leave the configured origin are rejected.
+Nextcloud authentication is an app password (Nextcloud → Settings → Security → Devices & sessions) plus the server URL and username. The password is stored with `secret-tool` attributes `application=nyx-news`, `kind=nextcloud`, `account=<uuid>`. Basic auth over HTTPS only. HTTP URLs are rejected. Redirects that leave the configured origin are rejected.
 
 ## Fetch and safety
 
@@ -324,12 +324,12 @@ Copyright behavior, present from Phase 1:
 
 ## UI behavior (Phase 1)
 
-Following is the start page (`nixe_theme::start_page`).
+Following is the start page (`nyx_theme::start_page`).
 
 - Toolbar: filter field when the page is a list, layout segment (List / Compact), Mark all read.
 - List: `GtkListView` + `SignalListItemFactory` over a `gio::ListStore` filled from a paged SQL query (about 200 rows, extended as the user scrolls). Rows are 35 px in compact, taller in list (title, feed name, time, unread dot). Selection is `@nav_active`.
 - Reader: a second column when the window is at least 980 px, otherwise a page pushed on the stack. Esc returns to the list. Opening an article sets `read_at` unless the user has “mark read on scroll” off (default: mark read on open). `m` toggles read, `s` stars, `b` saves.
-- Keyboard: the shared set from `nixe_ui::keys`, plus `j`/`k` or Down/Up to move, Enter to open, `r` to refresh the current feed, `Ctrl+N` to add a feed, `Ctrl+I` OPML import, `Ctrl+E` OPML export.
+- Keyboard: the shared set from `nyx_ui::keys`, plus `j`/`k` or Down/Up to move, Enter to open, `r` to refresh the current feed, `Ctrl+N` to add a feed, `Ctrl+I` OPML import, `Ctrl+E` OPML export.
 - Add feed: dialog with a URL entry. The worker fetches and parses. Success asks for a folder and inserts the feed. Failure is a toast with the parser or HTTP error.
 - OPML import merges by canonical feed URL. Existing feeds are not duplicated. Export writes the current folders and feeds.
 - Search (`Ctrl+F`) filters the open list through FTS when the query is non-empty, and by title substring when FTS would reject the token.
@@ -362,7 +362,7 @@ No tool deletes a feed or exports the database. `Describe` documents each tool i
 
 Phase 5 adds a Glimpse plugin (`capabilities = ["search", "preview"]`, `network = false`) that opens `news.sqlite` read-only and answers `news`, `news unread`, `news saved`, and free text. Preview is plain title, feed, and summary.
 
-Phase 5 Notes export writes a Markdown file through the save path the user picks (`nixe_core::control::save_target` when Assistant asks). It does not write the Assistant notes plugin’s private SQLite. A “Create note” action can call Assistant only after a silent completion/tool IPC exists.
+Phase 5 Notes export writes a Markdown file through the save path the user picks (`nyx_core::control::save_target` when Assistant asks). It does not write the Assistant notes plugin’s private SQLite. A “Create note” action can call Assistant only after a silent completion/tool IPC exists.
 
 Phase 4 AI calls a new Assistant IPC command that returns text and does not speak, with a timeout and a hard failure that leaves the article on screen. Audio briefings send the finished script to Assistant’s existing speech path. News never links `llama.cpp` or `loqui`. If the daemon is down, the action toasts “Assistant isn’t running” and returns.
 
@@ -374,14 +374,14 @@ Phase 6 news watches can call the existing Reminders ability. They do not add a 
 - The list factory binds only visible rows.
 - Images decode on the worker and only for rows that were bound.
 - Cache budget is a preference, default 200 MB, enforced by oldest-file deletion after refresh.
-- Idle CPU is the theme poll `nixe-theme` already runs, plus the refresh loop sleeping on a timer. No model load, no embedding index, no animation tick.
+- Idle CPU is the theme poll `nyx-theme` already runs, plus the refresh loop sleeping on a timer. No model load, no embedding index, no animation tick.
 - SQLite writes are batched per feed inside one transaction.
 
 ## Testing
 
-Unit tests live next to the core crates and use temp directories. `nixe_core::app` already falls back to the `nixe-test` identity when `init` was not called.
+Unit tests live next to the core crates and use temp directories. `nyx_core::app` already falls back to the `nyx-test` identity when `init` was not called.
 
-Phase 1 fixtures under `crates/nixe-news-core/tests/fixtures/`:
+Phase 1 fixtures under `crates/nyx-news-core/tests/fixtures/`:
 
 - Valid RSS 2.0, Atom, and JSON Feed.
 - Malformed XML, truncated JSON, a feed larger than the cap, a feed with no entries, duplicate guids, missing guids.
@@ -392,16 +392,16 @@ Phase 1 fixtures under `crates/nixe-news-core/tests/fixtures/`:
 - Retention that keeps starred items.
 - A refresh that replaces a title and preserves `read_at`.
 
-Phase 2 adds merge tests: offline ops, two devices editing one feed, a tombstone against a later edit, a manifest `412`, and a crash between batch apply and checkpoint (kill the process around a test hook, reopen, assert the database matches the last checkpoint). WebDAV tests use a local stub that speaks the verbs the adapter uses. A disposable Nextcloud container is documented and gated by `NIXE_NEWS_WEBDAV_URL`. It is not required for `cargo test --workspace`.
+Phase 2 adds merge tests: offline ops, two devices editing one feed, a tombstone against a later edit, a manifest `412`, and a crash between batch apply and checkpoint (kill the process around a test hook, reopen, assert the database matches the last checkpoint). WebDAV tests use a local stub that speaks the verbs the adapter uses. A disposable Nextcloud container is documented and gated by `NYX_NEWS_WEBDAV_URL`. It is not required for `cargo test --workspace`.
 
 Phase 4 tests the AI adapter with a fake client that errors, times out, and returns text. The article pane stays usable in all three.
 
 Commands:
 
 ```sh
-cargo test -p nixe-news-core -p nixe-sync
-cargo test -p nixe-news
-cargo clippy -p nixe-news -p nixe-news-core -p nixe-sync --all-targets -- -D warnings
+cargo test -p nyx-news-core -p nyx-sync
+cargo test -p nyx-news
+cargo clippy -p nyx-news -p nyx-news-core -p nyx-sync --all-targets -- -D warnings
 ```
 
 Format only the new crates. The workspace is not rustfmt-clean as a whole.
@@ -416,13 +416,13 @@ Build the crates, the app shell, schema v1, fetch, parse, timeline, reader, read
 
 Accepted when:
 
-- `nixe-news` opens on Following with the shared theme and the Music sidebar construction.
+- `nyx-news` opens on Following with the shared theme and the Music sidebar construction.
 - A user can add an RSS, Atom, and JSON feed, read items offline after one successful fetch, mark read, star, save, search, and import/export OPML.
 - Malformed feeds and private URLs fail with a toast and do not change older items.
 - Tests listed above pass.
 - Startup does not contact Assistant or open a model.
 
-### Phase 2 — `nixe-sync` and Nextcloud
+### Phase 2 — `nyx-sync` and Nextcloud
 
 Accepted when two scratch databases and a stub WebDAV server converge after interleaved offline edits, a deletion, and a killed sync, and a wrong app password reports an error without writing the local file. Article bodies are absent from the uploaded batches.
 
@@ -457,7 +457,7 @@ FreshRSS, Miniflux, more sync providers, richer smart folders, news watches thro
 | Discovery without a vendor API | Bundled OPML and autodiscovery. An empty third-party provider trait can wait |
 | `feed-rs` 3.0 model break | Pin 2.4. Upgrade is its own change |
 | Notes “app” does not exist | Export Markdown. Do not write the plugin’s private database |
-| Shared accounts do not exist | `nixe-sync` credentials. Do not extend Settings’ OS user page into cloud tokens |
+| Shared accounts do not exist | `nyx-sync` credentials. Do not extend Settings’ OS user page into cloud tokens |
 
 ## Unresolved
 
@@ -468,8 +468,8 @@ FreshRSS, Miniflux, more sync providers, richer smart folders, news watches thro
 
 ## Implementation order after approval
 
-1. Add `crates/nixe-sync` with the trait, HLC, merge tests, and credential wrapper. No WebDAV calls yet beyond the types Phase 1 needs for `change_log` (the table exists; the worker does not upload).
-2. Add `crates/nixe-news-core` with schema v1, parser, fetch guard, OPML, FTS, and fixtures.
+1. Add `crates/nyx-sync` with the trait, HLC, merge tests, and credential wrapper. No WebDAV calls yet beyond the types Phase 1 needs for `change_log` (the table exists; the worker does not upload).
+2. Add `crates/nyx-news-core` with schema v1, parser, fetch guard, OPML, FTS, and fixtures.
 3. Add `apps/news` using Music’s window construction, wire the worker, settings card, control interface, desktop file, icon, `install.sh`, and README row.
 4. Run the Phase 1 tests and the 800 px layout check.
 5. Stop. Phase 2 begins only when Phase 1 is accepted.
