@@ -29,9 +29,7 @@ static TX: OnceLock<mpsc::UnboundedSender<Job>> = OnceLock::new();
 
 pub fn start() {
     let (tx, mut rx) = mpsc::unbounded_channel();
-    if std::env::var_os("NEWS_SNAPSHOT").is_none() {
-        let _ = tx.send(Job::FillPaper);
-    }
+    let _ = tx.send(Job::FillPaper);
     if TX.set(tx).is_err() {
         return;
     }

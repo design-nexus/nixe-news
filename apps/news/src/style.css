@@ -1,53 +1,57 @@
-.settings-navigation.compact button.nav-item {
-  min-width: 40px;
+/* News on Nyx 2.0: only News' own parts. One surface: the header, the sidebar, the
+   timeline and the reader share the window's background; cards and spacing, not
+   lines, separate them. The sidebar, buttons, inputs and dialogs come from the shared
+   sheets; headlines and the reader keep their serif. */
+
+/* ---------- Header ---------- */
+
+.header-status {
+  font-size: 11.5px;
+  color: @theme_dim_text;
+  font-feature-settings: "tnum";
+}
+
+window.news-window .app-header button.bar-button {
+  min-width: 32px;
+  min-height: 32px;
   padding: 0;
-}
-
-.settings-navigation button.nav-item {
-  min-height: 42px;
-  padding: 0 12px;
-  margin: 1px 0;
-  border-radius: 6px;
-  border: none;
-  background: transparent;
-  box-shadow: none;
-  color: @theme_text;
-  font-weight: 500;
-}
-
-.settings-navigation button.nav-item:hover {
-  background: @row_hover;
-}
-
-.settings-navigation button.nav-item.active {
-  background: @nav_active;
+  border-radius: var(--nyx-radius-small);
   box-shadow: none;
 }
+
+/* The icon-only sidebar hides its group labels itself. The shared sheet's
+   font-size: 0 for them can stick after the sidebar expands again. */
+.settings-navigation .nav-group,
+.settings-navigation.compact .nav-group {
+  font-size: 11px;
+}
+
+/* ---------- Page toolbar ---------- */
 
 .toolbar {
-  min-height: 46px;
-  padding: 0 12px 0 16px;
-  border-bottom: 1px solid @hairline;
+  min-height: 44px;
+  padding: 0 16px 0 20px;
 }
 
 .toolbar-title {
-  font-weight: 700;
+  font-weight: 600;
   color: @theme_text;
 }
 
 .toolbar-meta {
-  font-size: 0.86em;
+  font-size: 12px;
   color: @theme_dim_text;
 }
 
+/* ---------- Story list ---------- */
+
 .article-row {
-  padding: 12px 18px;
-  border-radius: 0;
-  border-bottom: 1px solid @divider;
+  padding: 12px 16px;
+  border-radius: var(--nyx-radius-small);
 }
 
 .article-row.compact {
-  padding: 7px 18px;
+  padding: 7px 16px;
 }
 
 .unread-dot {
@@ -72,25 +76,46 @@
 }
 
 .article-title.unread {
-  font-weight: 700;
+  font-weight: 600;
   color: @theme_text;
 }
 
 .article-excerpt {
   color: @theme_dim_text;
-  font-size: 0.88em;
+  font-size: 12.5px;
 }
 
 .article-meta {
   color: @theme_dim_text;
-  font-size: 0.82em;
+  font-size: 12px;
 }
 
 .article-source {
   color: @theme_accent;
   font-weight: 600;
-  font-size: 0.82em;
+  font-size: 12px;
 }
+
+listview {
+  background: transparent;
+}
+
+listview > row {
+  padding: 0;
+  margin: 0 6px;
+  border-radius: var(--nyx-radius-small);
+  background: transparent;
+}
+
+listview > row:hover {
+  background: @row_hover;
+}
+
+listview > row:selected {
+  background: @nav_active;
+}
+
+/* ---------- Reader ---------- */
 
 .reader {
   padding: 0;
@@ -98,44 +123,44 @@
 }
 
 .reader-cover {
-  border-radius: 8px;
+  border-radius: var(--nyx-radius-card);
 }
 
 .reader-kicker {
   color: @theme_accent;
-  font-size: 0.86em;
+  font-size: 12px;
   font-weight: 600;
 }
 
 .reader-title {
   font-family: "Noto Serif", "Liberation Serif", serif;
-  font-size: 1.75em;
-  font-weight: 700;
+  font-size: 26px;
+  font-weight: 600;
   line-height: 1.25;
   color: @theme_text;
 }
 
 .reader-meta {
   color: @theme_dim_text;
-  font-size: 0.88em;
+  font-size: 12.5px;
 }
 
+/* The summary from Assistant: a card tinted in the accent. */
 .reader-brief-card {
   padding: 14px 18px;
-  border-radius: 10px;
+  border-radius: var(--nyx-radius-card);
   background: alpha(@theme_accent, 0.09);
-  border: 1px solid alpha(@theme_accent, 0.35);
 }
 
 .reader-brief-title {
-  font-size: 0.76em;
-  font-weight: 700;
-  letter-spacing: 1.5px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
   color: @theme_accent;
 }
 
 .reader-brief-body {
-  font-size: 0.94em;
+  font-size: 13px;
   color: @theme_text;
 }
 
@@ -168,7 +193,7 @@
 }
 
 .reader-body.font-sans {
-  font-family: "Adwaita Sans", "Noto Sans", sans-serif;
+  font-family: "Inter", "Adwaita Sans", "Noto Sans", sans-serif;
 }
 
 .reader-body.font-mono {
@@ -188,9 +213,7 @@
 }
 
 .reader-footer {
-  margin-top: 16px;
-  padding-top: 16px;
-  border-top: 1px solid @hairline;
+  margin-top: 24px;
 }
 
 window.news-window button.active {
@@ -201,22 +224,3 @@ window.news-window button.active {
 .empty-hint {
   color: @theme_dim_text;
 }
-
-listview {
-  background: transparent;
-}
-
-listview > row {
-  padding: 0;
-  border-radius: 0;
-  background: transparent;
-}
-
-listview > row:hover {
-  background: @row_hover;
-}
-
-listview > row:selected {
-  background: @nav_active;
-}
-

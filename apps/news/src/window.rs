@@ -1,5 +1,7 @@
-//! The News window. The sidebar follows Music: it does not grow, and it
-//! collapses to icons under 980 px or when the user collapses it.
+//! The News window: the header (the app and the page, the sidebar toggle; the search in
+//! the middle; the story count, Refresh and Settings at the end) over the sidebar and the
+//! pages. The sidebar does not grow, and it collapses to icons under 980 px or when the
+//! user collapses it.
 
 use crate::dialogs;
 use crate::paths;
@@ -40,7 +42,7 @@ struct Ui {
     nav: gtk::Box,
     nav_list: gtk::Box,
     search: gtk::SearchEntry,
-    status: gtk::Label,
+    header: chrome::AppHeader,
     view: View,
     articles: Vec<ArticleListItem>,
     selected: Option<String>,
@@ -98,12 +100,6 @@ pub fn present(app: &gtk::Application, section: Option<&str>) {
     }
     let Some(ui) = ui() else { return };
     let window = ui.borrow().window.clone();
-    if std::env::var_os("NEWS_SNAPSHOT").is_some() {
-        window.set_default_size(
-            std::env::var("NEWS_SNAPSHOT_W").ok().and_then(|v| v.parse().ok()).unwrap_or(1120),
-            std::env::var("NEWS_SNAPSHOT_H").ok().and_then(|v| v.parse().ok()).unwrap_or(800),
-        );
-    }
     window.present();
     match section {
         Some("settings") => settings_dialog::open(),
@@ -119,68 +115,6 @@ pub fn present(app: &gtk::Application, section: Option<&str>) {
         }
         Some(other) => navigate(&view_from_section(other)),
     }
-    if let Some(out) = std::env::var_os("NEWS_SNAPSHOT") {
-        snapshot_and_quit(app, std::path::PathBuf::from(out));
-    }
-}
-
-fn snapshot_and_quit(app: &gtk::Application, out: std::path::PathBuf) {
-    let Some(ui) = ui() else { return };
-    let window = ui.borrow().window.clone();
-    let nav = ui.borrow().nav.clone();
-    let snap_w: i32 = std::env::var("NEWS_SNAPSHOT_W").ok().and_then(|v| v.parse().ok()).unwrap_or(1120);
-    let snap_h: i32 = std::env::var("NEWS_SNAPSHOT_H").ok().and_then(|v| v.parse().ok()).unwrap_or(800);
-    window.set_opacity(0.01);
-    window.set_title(Some("News snapshot"));
-    window.set_default_size(snap_w, snap_h);
-    window.set_size_request(snap_w, snap_h);
-    window.present();
-    if let Ok(layout) = std::env::var("NEWS_SNAPSHOT_LAYOUT") {
-        prefs::update(|p| p.layout = layout);
-        reload();
-    }
-    if let Ok(section) = std::env::var("NEWS_SNAPSHOT_SECTION") {
-        glib::timeout_add_local_once(std::time::Duration::from_millis(300), move || {
-            timeline::show_section(&section);
-            navigate(&View::All);
-        });
-    } else if let Ok(id) = std::env::var("NEWS_SNAPSHOT_STORY_ID") {
-        glib::timeout_add_local_once(std::time::Duration::from_millis(300), move || {
-            if let Some(article) = with_db(|db| db.article(&id)).ok().flatten() {
-                reader::show(&article);
-            }
-        });
-    } else if std::env::var_os("NEWS_SNAPSHOT_READER").is_some() {
-        glib::timeout_add_local_once(std::time::Duration::from_millis(300), || {
-            let arts = articles();
-            if let Some(first) = arts.first() {
-                reader::show(first);
-            }
-        });
-    }
-    if let Ok(url) = std::env::var("NEWS_CHECK_URL") {
-        glib::timeout_add_local_once(std::time::Duration::from_millis(200), move || worker::add_url(url));
-    }
-    let app = app.clone();
-    let delay: u64 = std::env::var("NEWS_SNAPSHOT_DELAY").ok().and_then(|v| v.parse().ok()).unwrap_or(900);
-    glib::timeout_add_local_once(std::time::Duration::from_millis(delay), move || {
-        let (w, h, nav_w, compact) = (window.width(), window.height(), nav.width(), nav.has_css_class("compact"));
-        if let Some(child) = window.child() {
-            let paintable = gtk::WidgetPaintable::new(Some(&child));
-            let snapshot = gtk::Snapshot::new();
-            snapshot.append_color(&gdk::RGBA::BLACK, &gtk::graphene::Rect::new(0.0, 0.0, w as f32, h as f32));
-            paintable.snapshot(&snapshot, w as f64, h as f64);
-            if let (Some(node), Some(renderer)) = (snapshot.to_node(), window.renderer()) {
-                let texture = renderer.render_texture(node, None);
-                match texture.save_to_png(&out) {
-                    Ok(()) => {}
-                    Err(e) => eprintln!("snapshot failed: {e}"),
-                }
-            }
-        }
-        println!("snapshot {w}x{h} nav={nav_w} compact={compact} -> {}", out.display());
-        app.quit();
-    });
 }
 
 fn view_from_section(section: &str) -> View {
@@ -248,7 +182,9 @@ pub fn navigate(view: &View) {
     let Some(ui) = ui() else { return };
     ui.borrow_mut().view = view.clone();
     prefs::update(|p| p.last_section = section_id(view));
-    chrome::set_title(&ui.borrow().window, "News", &page_name(view));
+    let name = page_name(view);
+    chrome::set_title(&ui.borrow().window, "News", &name);
+    ui.borrow().header.set_subtitle(&name);
     timeline::show_list();
     reader::hide();
     reload();
@@ -258,7 +194,9 @@ pub fn navigate(view: &View) {
 pub fn show_discover() {
     timeline::show_discover();
     reader::hide();
-    chrome::set_title(&ui().unwrap().borrow().window, "News", "Discover");
+    let ui = ui().unwrap();
+    chrome::set_title(&ui.borrow().window, "News", "Discover");
+    ui.borrow().header.set_subtitle("Channels & Topics");
     rebuild_nav();
 }
 
@@ -362,23 +300,9 @@ pub fn reload() {
         Ok(items) => {
             ui.borrow_mut().articles = items;
             timeline::bind_articles();
-            refresh_status();
         }
         Err(err) => toast(&err.to_string()),
     }
-}
-
-pub fn refresh_status() {
-    let Some(ui) = ui() else { return };
-    let count = ui.borrow().articles.len();
-    let text = if count == 0 {
-        "News".into()
-    } else if count == 1 {
-        "1 story".into()
-    } else {
-        format!("{count} stories")
-    };
-    ui.borrow().status.set_text(&text);
 }
 
 pub fn selected_id() -> Option<String> {
@@ -534,7 +458,7 @@ fn rebuild_nav() {
 }
 
 fn build(app: &gtk::Application) {
-    let window = gtk::ApplicationWindow::builder().application(app).title("News").default_width(1120).default_height(800).build();
+    let window = gtk::ApplicationWindow::builder().application(app).title("News").default_width(1280).default_height(800).build();
     window.add_css_class("news-window");
     window.set_titlebar(Some(&gtk::Box::new(gtk::Orientation::Horizontal, 0)));
     window.set_icon_name(Some("io.github.design_nexus.nyx.News"));
@@ -560,36 +484,21 @@ fn build(app: &gtk::Application) {
         .vexpand(true)
         .child(&list)
         .build();
-    let head = chrome::sidebar_head("News", Some("Search articles (Ctrl+F)"));
-    head.toggle.connect_clicked(|_| toggle_sidebar());
-    nav.append(&head.root);
     nav.append(&nav_scroll);
 
+    // The search, always in the header (Ctrl+F or /).
     let search = gtk::SearchEntry::new();
-    search.set_placeholder_text(Some("Search articles"));
-    search.set_visible(false);
+    search.set_placeholder_text(Some("Search articles  (Ctrl+F)"));
+    search.add_css_class("bar-search");
+    search.set_width_chars(SEARCH_WIDE);
+    search.update_property(&[gtk::accessible::Property::Label("Search articles")]);
     search.connect_search_changed(|_| reload());
-    search.connect_stop_search(|entry| {
-        entry.set_text("");
-        entry.set_visible(false);
-    });
-    if let Some(find) = &head.search {
-        let entry = search.clone();
-        find.connect_clicked(move |_| {
-            if entry.is_visible() && entry.text().is_empty() {
-                entry.set_visible(false);
-            } else {
-                entry.set_visible(true);
-                entry.grab_focus();
-            }
-        });
-    }
+    search.connect_stop_search(|entry| entry.set_text(""));
 
     let pages = timeline::build();
     let content = gtk::Box::new(gtk::Orientation::Vertical, 0);
     content.add_css_class("settings-content");
     content.set_hexpand(true);
-    content.append(&chrome::search_strip(&search));
     content.append(&pages);
 
     let body = gtk::Box::new(gtk::Orientation::Horizontal, 0);
@@ -597,10 +506,20 @@ fn build(app: &gtk::Application) {
     body.append(&nav);
     body.append(&content);
 
+    // ----- Header -----
+    // The app and the page, the sidebar toggle; the search in the middle; Settings at
+    // the end. The page's own toolbar carries its count, Refresh and layout.
+    let header = chrome::app_header(&window, "application-rss+xml-symbolic", "News");
+    let collapse = widgets::bar_button("sidebar-show-symbolic", "Collapse the sidebar (Ctrl+B)");
+    collapse.connect_clicked(|_| toggle_sidebar());
+    header.start.append(&collapse);
+    header.center.append(&search);
+    header.end.append(&chrome::settings_button(settings_dialog::open));
+
     let frame = gtk::Box::new(gtk::Orientation::Vertical, 0);
     frame.add_css_class("window-frame");
+    frame.append(&header.root);
     frame.append(&body);
-    frame.append(&status_bar());
 
     let overlay = gtk::Overlay::new();
     overlay.set_child(Some(&frame));
@@ -613,7 +532,7 @@ fn build(app: &gtk::Application) {
         nav: nav.clone(),
         nav_list: list,
         search,
-        status: status_label(),
+        header,
         view: View::All,
         articles: Vec::new(),
         selected: None,
@@ -635,6 +554,10 @@ fn build(app: &gtk::Application) {
             nav.add_css_class("sized");
             NARROW.with(|n| n.set(narrow));
             apply_compact(&nav, narrow || prefs::get().sidebar_collapsed);
+            // A tiled half-screen header gets a shorter search.
+            if let Some(ui) = self::ui() {
+                ui.borrow().search.set_width_chars(if narrow { SEARCH_NARROW } else { SEARCH_WIDE });
+            }
             if sized && prev != narrow {
                 reload();
             }
@@ -654,33 +577,11 @@ fn build(app: &gtk::Application) {
     rebuild_nav();
 }
 
-fn status_label() -> gtk::Label {
-    STATUS.with(|s| s.borrow().clone().unwrap_or_else(|| widgets::label("", "status-readout")))
-}
-
-thread_local! {
-    static STATUS: RefCell<Option<gtk::Label>> = const { RefCell::new(None) };
-}
-
-fn status_bar() -> gtk::Box {
-    let bar = gtk::Box::new(gtk::Orientation::Horizontal, 16);
-    bar.add_css_class("status-bar");
-    bar.append(&chrome::shortcuts_button(show_shortcuts));
-    let spacer = gtk::Box::new(gtk::Orientation::Horizontal, 0);
-    spacer.set_hexpand(true);
-    bar.append(&spacer);
-    let readout = widgets::label("", "status-readout");
-    readout.set_ellipsize(gtk::pango::EllipsizeMode::Start);
-    STATUS.with(|s| *s.borrow_mut() = Some(readout.clone()));
-    bar.append(&readout);
-    bar.append(&chrome::gear(settings_dialog::open));
-    bar
-}
+/// The search's width in characters, in a full window and a narrow one.
+const SEARCH_WIDE: i32 = 30;
+const SEARCH_NARROW: i32 = 14;
 
 fn apply_compact(nav: &gtk::Box, compact: bool) {
-    if let Some(head) = nav.first_child().and_downcast::<gtk::Box>() {
-        chrome::set_head_compact(&head, compact);
-    }
     if compact {
         nav.add_css_class("compact");
     } else {
@@ -724,7 +625,6 @@ fn install_keys(window: &gtk::ApplicationWindow, search: &gtk::SearchEntry) {
     keys.connect_key_pressed(move |_, key, _, mods| {
         let ctrl = mods.contains(gdk::ModifierType::CONTROL_MASK);
         if ctrl && key == gdk::Key::f {
-            search.set_visible(true);
             search.grab_focus();
             return glib::Propagation::Stop;
         }
@@ -761,13 +661,11 @@ fn install_keys(window: &gtk::ApplicationWindow, search: &gtk::SearchEntry) {
             gdk::Key::o => reader::open_original(),
             gdk::Key::r => worker::refresh_current(),
             gdk::Key::slash => {
-                search.set_visible(true);
                 search.grab_focus();
             }
             gdk::Key::Escape => {
-                if search.is_visible() {
+                if !search.text().is_empty() {
                     search.set_text("");
-                    search.set_visible(false);
                 } else {
                     reader::hide();
                     timeline::show_list();

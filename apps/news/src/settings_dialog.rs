@@ -9,7 +9,7 @@ use nyx_ui::settings_card::{self, Spec};
 pub use nyx_ui::settings_card::fit;
 
 const GROUPS: &[(&str, &str, &str)] = &[
-    ("News window", "applications-graphics-symbolic", "Theme, glow, motion"),
+    ("News window", "applications-graphics-symbolic", "Theme, accent, motion"),
     ("Reading", "view-list-symbolic", "Layout, retention, read state"),
     ("News Topics", "tag-symbolic", "Enable or disable front page categories"),
     ("Refresh", "view-refresh-symbolic", "How often feeds update"),

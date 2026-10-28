@@ -1,8 +1,11 @@
 # News — notes for working on this app
 
-- GTK4 (`gtk4` 0.11, `v4_18`) + Rust. No libadwaita and no WebKit. The window follows
-  Music: a flat sidebar (`hexpand` false, 250 px, icons under 980 px), the page, and a
-  status bar. Settings is `nyx_ui::settings_card`. Colors are `@theme_*` tokens.
+- GTK4 (`gtk4` 0.11, `v4_18`) + Rust. No libadwaita and no WebKit. Nyx Design 2.0
+  (`use_design_2`): one surface, cards without outlines, no lines. The unified header
+  (`chrome::app_header`) has the app with the page as its subtitle and the sidebar toggle,
+  the search in the middle (Ctrl+F or /), and Settings at the end; the page's toolbar keeps
+  its count, Refresh and layout. No status bar. The sidebar does not grow and turns to
+  icons under 980 px. Settings is `nyx_ui::settings_card`. Colors are `@theme_*` tokens.
 - `crates/nyx-news-core` owns SQLite, feed parsing, fetch, OPML, and search. The app
   crate is the GTK shell and the worker. `crates/nyx-sync` moves folders, feeds, read
   state, and a few preferences to Nextcloud WebDAV. Article bodies stay on this computer.
@@ -27,5 +30,6 @@
   until Settings → Notifications.
 - Checks: `cargo test -p nyx-sync -p nyx-news-core -p nyx-news` and
   `cargo clippy -p nyx-news -p nyx-news-core -p nyx-sync --all-targets -- -D warnings`.
-  Layout: `NEWS_SNAPSHOT=/tmp/news.png NEWS_SNAPSHOT_W=800 NEWS_SNAPSHOT_H=700 nyx-news`
-  under scratch `XDG_*` dirs. It prints the sidebar width and whether the nav is compact.
+  Layout: a test copy on a private virtual monitor,
+  `NYX_NEWS_APP_ID=io.github.design_nexus.nyx.NewsTest nyx-news` under scratch `XDG_*`
+  dirs (a separate instance, so the open copy is untouched).
