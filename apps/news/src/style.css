@@ -28,9 +28,13 @@ window.news-window .app-header button.bar-button {
 
 /* ---------- Page toolbar ---------- */
 
-.toolbar {
+/* The page's own row sits on the window, with none of the GTK theme's toolbar fill. */
+.news-window .toolbar {
   min-height: 44px;
   padding: 0 16px 0 20px;
+  background: transparent;
+  border: none;
+  box-shadow: none;
 }
 
 .toolbar-title {

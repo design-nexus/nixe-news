@@ -332,14 +332,14 @@ pub fn move_selection(delta: i32) {
 
 fn section_icon(name: &str) -> &'static str {
     match name {
-        "World" => "globe-symbolic",
+        "World" => "web-browser-symbolic",
         "National" => "emoji-flags-symbolic",
         "Politics" => "system-users-symbolic",
-        "Business" => "money-symbolic",
+        "Business" => "x-office-spreadsheet-symbolic",
         "Technology" => "computer-symbolic",
         "Science" => "applications-science-symbolic",
-        "Health" => "applications-health-symbolic",
-        "Sports" => "stopwatch-symbolic",
+        "Health" => "face-smile-symbolic",
+        "Sports" => "applications-games-symbolic",
         "Culture" => "applications-graphics-symbolic",
         _ => "view-list-symbolic",
     }
